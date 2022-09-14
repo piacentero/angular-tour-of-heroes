@@ -5,8 +5,8 @@
         Add
     </button>
 </div>
-<ul class="heroes">
-    <li *ngFor="let hero of heroes | async" (click)="onSelect(hero)"
+<ul class="heroes" [hidden]="loadingHeroes">
+    <li *ngFor="let hero of heroes$ | async" (click)="onSelect(hero)"
         [class.selected]="hero === selectedHero">
         <span class="badge">{{hero.id}}</span>
         <span>{{hero.name}}</span>
@@ -16,8 +16,13 @@
     </li>
 </ul>
 <div *ngIf="selectedHero">
-    <h2>
-        {{selectedHero.name | uppercase}} is my hero
-    </h2>
-    <button (click)="gotoDetail()">View Details</button>
+  <h4>
+      {{selectedHero.name | uppercase}} is my hero
+  </h4>
+  <button (click)="gotoDetail()">View Details</button>
+</div>
+<div *ngIf="loadingHeroes">
+    <h4>
+        Loading...
+    </h4>
 </div>

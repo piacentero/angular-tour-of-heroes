@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { finalize, Observable, tap } from 'rxjs';
 
 import { Hero } from './hero';
 import { HeroService } from './hero.service';
@@ -11,9 +11,10 @@ import { HeroService } from './hero.service';
   styleUrls: ['./heroes.component.scss']
 })
 export class HeroesComponent implements OnInit {
-  heroes: Observable<Hero[]>;
+  heroes$: Observable<Hero[]>;
   selectedHero: Hero;
   lastIdHeroes: number;
+  loadingHeroes: boolean = false;
 
   constructor(private heroService: HeroService,
               private router: Router) {
@@ -24,10 +25,14 @@ export class HeroesComponent implements OnInit {
   }
 
   getHeroes(): void {
-    this.heroes = this.heroService
+    this.loadingHeroes = true;
+    this.heroes$ = this.heroService
         .getHeroes().pipe(
           tap((heroes)=> {
             this.lastIdHeroes= heroes[heroes.length-1].id;
+          }),
+          finalize(()=> {
+            this.loadingHeroes = false;
           })
         );
   }
