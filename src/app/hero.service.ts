@@ -41,8 +41,8 @@ export class HeroService {
         );
   }
 
-  create(name: string): Observable<Hero> {
-      return this.http.post<Hero>(`${this.heroesUrl}`, name, { headers: this.headers}).pipe(
+  create(name: string, id:number): Observable<Hero> {
+      return this.http.post<Hero>(`${this.heroesUrl}`, {name , id }, { headers: this.headers}).pipe(
         catchError(error => {
           return this.handleError(error);
         })

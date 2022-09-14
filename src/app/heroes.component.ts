@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
 
 import { Hero } from './hero';
 import { HeroService } from './hero.service';
@@ -10,27 +11,35 @@ import { HeroService } from './hero.service';
   styleUrls: ['./heroes.component.scss']
 })
 export class HeroesComponent implements OnInit {
-  heroes: Hero[];
+  heroes: Observable<Hero[]>;
   selectedHero: Hero;
+  lastIdHeroes: number;
 
   constructor(private heroService: HeroService,
               private router: Router) {
   }
 
-  getHeroes(): void {
-    this.heroService
-        .getHeroes()
-        .subscribe(heroes => this.heroes = heroes);
+  ngOnInit(): void {
+    this.getHeroes();
   }
 
-  add(name: string): void {
+  getHeroes(): void {
+    this.heroes = this.heroService
+        .getHeroes().pipe(
+          tap((heroes)=> {
+            this.lastIdHeroes= heroes[heroes.length-1].id;
+          })
+        );
+  }
+
+  add(name: string, id: number): void {
     name = name.trim();
     if (!name) {
       return;
     }
-    this.heroService.create(name)
+    this.heroService.create(name,id)
         .subscribe(hero => {
-          this.heroes.push(hero);
+          this.getHeroes();
           this.selectedHero = null;
         });
   }
@@ -39,15 +48,11 @@ export class HeroesComponent implements OnInit {
     this.heroService
         .delete(hero.id)
         .subscribe(() => {
-          this.heroes = this.heroes.filter(h => h !== hero);
+          this.getHeroes();
           if (this.selectedHero === hero) {
             this.selectedHero = null;
           }
         });
-  }
-
-  ngOnInit(): void {
-    this.getHeroes();
   }
 
   onSelect(hero: Hero): void {
