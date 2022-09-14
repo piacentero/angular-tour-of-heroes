@@ -1,19 +1,26 @@
 <h2>My Heroes</h2>
-<div>
-    <label>Hero name:</label> <input #heroName/>
-    <button (click)="add(heroName.value,lastIdHeroes+1); heroName.value=''">
-        Add
-    </button>
+<div class="my-4">
+    <div class="input-group mb-3">
+        <input #heroName type="text" class="form-control" placeholder="Hero name:" aria-label="Hero name:" aria-describedby="button-addon2">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="add(heroName.value,lastIdHeroes+1); heroName.value=''">Add</button>
+    </div>
 </div>
-<ul class="heroes" [hidden]="loadingHeroes">
-    <li *ngFor="let hero of heroes$ | async" (click)="onSelect(hero)"
-        [class.selected]="hero === selectedHero">
-        <span class="badge">{{hero.id}}</span>
-        <span>{{hero.name}}</span>
-        <button class="delete"
+
+<ul class="list-group" [hidden]="loadingHeroes">
+    <ng-container *ngFor="let hero of heroes$ | async; index as i" >
+        <li class="list-group-item" 
+            [ngClass]="{ 'bg-blue' : i%2==0}"
+            (click)="onSelect(hero)"
+            [class.active]="hero === selectedHero"
+            >
+        <span >{{hero.id}} </span>
+        <span> {{hero.name}} </span>
+        <button type="button" class="btn btn-danger float-end"
                 (click)="delete(hero); $event.stopPropagation()">x
         </button>
     </li>
+    </ng-container>
+    
 </ul>
 <div *ngIf="selectedHero">
   <h4>
