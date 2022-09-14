@@ -2,9 +2,9 @@ import { Component, OnInit }        from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location }                 from '@angular/common';
 
-import { Hero }        from './hero';
-import { HeroService } from './hero.service';
 import { switchMap } from 'rxjs/operators';
+import { HeroService } from '@shared/services/hero.service';
+import { Hero } from '@shared/models/hero';
 
 @Component({
   selector: 'toh-hero-detail',

@@ -1,14 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard.component';
-import { HeroDetailComponent } from './hero-detail.component';
-import { HeroesComponent } from './heroes.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'detail/:id', component: HeroDetailComponent },
-  { path: 'heroes', component: HeroesComponent }
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule)
+  },
+  {
+    path: 'detail/:id',
+    loadChildren: () => import('./features/hero-detail/hero-detail.module').then(m => m.HeroDetailModule)
+  },
+  {
+    path: 'heroes',
+    loadChildren: () => import('./features/heroes/heroes.module').then(m => m.HeroesModule)
+  }
+  // { path: 'dashboard', component: DashboardComponent },
+  // { path: 'detail/:id', component: HeroDetailComponent },
+  // { path: 'heroes', component: HeroesComponent }
 ];
 
 @NgModule({

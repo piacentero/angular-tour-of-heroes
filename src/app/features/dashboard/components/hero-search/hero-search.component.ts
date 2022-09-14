@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Hero } from '@shared/models/hero';
 
 import { debounceTime, distinctUntilChanged, map, Observable, of, Subject, switchMap } from 'rxjs';
-import { Hero } from './hero';
 import { HeroSearchService } from './hero-search.service';
 
 @Component({

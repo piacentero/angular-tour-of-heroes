@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { Hero } from './hero';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Hero } from '@shared/models/hero';
 
 @Injectable()
 export class HeroSearchService {

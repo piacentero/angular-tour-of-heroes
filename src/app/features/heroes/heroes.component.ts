@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Hero } from '@shared/models/hero';
+import { HeroService } from '@shared/services/hero.service';
 import { finalize, Observable, tap } from 'rxjs';
-
-import { Hero } from './hero';
-import { HeroService } from './hero.service';
 
 @Component({
   selector: 'toh-heroes',
