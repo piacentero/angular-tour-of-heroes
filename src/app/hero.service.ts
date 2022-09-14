@@ -1,15 +1,16 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 
-import 'rxjs/add/operator/toPromise';
-
 import { Hero } from './hero';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
+
 export class HeroService {
 
-  private headers = new Headers({ 'Content-Type': 'application/json' });
+  private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
   private heroesUrl = 'api/heroes';  // URL to web api
 
   constructor(private http: HttpClient) {
@@ -18,53 +19,48 @@ export class HeroService {
   getHeroes(): Observable<Hero[]> {
     return this.http.get<Hero[]>(this.heroesUrl).pipe(
       catchError(error => {
-        console.error('An error occurred', error); // for demo purposes only
-        return throwError(() => error);
+        return this.handleError(error);
       })
     );
-    // return this.http.get(this.heroesUrl)
-    //     .toPromise()
-    //     .then(response => response.json().data as Hero[])
-    //     .catch(this.handleError);
   }
 
 
-  getHero(id: number): Promise<Hero> {
-    const url = `${this.heroesUrl}/${id}`;
-    return this.http.get(url)
-        .toPromise()
-        .then(response => response.json().data as Hero)
-        .catch(this.handleError);
+  getHero(id: number): Observable<Hero> {
+    return this.http.get<Hero>(`${this.heroesUrl}/${id}`).pipe(
+      catchError(error => {
+        return this.handleError(error);
+      })
+    );
   }
 
-  delete(id: number): Promise<void> {
-    const url = `${this.heroesUrl}/${id}`;
-    return this.http.delete(url, { headers: this.headers })
-        .toPromise()
-        .then(() => null)
-        .catch(this.handleError);
+  delete(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.heroesUrl}/${id}`, { headers: this.headers}).pipe(
+          catchError(error => {
+            return this.handleError(error);
+          })
+        );
   }
 
-  create(name: string): Promise<Hero> {
-    return this.http
-        .post(this.heroesUrl, JSON.stringify({ name: name }), { headers: this.headers })
-        .toPromise()
-        .then(res => res.json().data as Hero)
-        .catch(this.handleError);
+  create(name: string): Observable<Hero> {
+      return this.http.post<Hero>(`${this.heroesUrl}`, name, { headers: this.headers}).pipe(
+        catchError(error => {
+          return this.handleError(error);
+        })
+      );
   }
 
-  update(hero: Hero): Promise<Hero> {
+  update(hero: Hero): Observable<Hero> {
     const url = `${this.heroesUrl}/${hero.id}`;
-    return this.http
-        .put(url, JSON.stringify(hero), { headers: this.headers })
-        .toPromise()
-        .then(() => hero)
-        .catch(this.handleError);
+        return this.http.put<Hero>(`${this.heroesUrl}/${hero.id}`, hero, { headers: this.headers}).pipe(
+          catchError(error => {
+            return this.handleError(error)
+          })
+        );
   }
 
-  private handleError(error: any): Promise<any> {
+  private handleError(error: any): Observable<never> {
     console.error('An error occurred', error); // for demo purposes only
-    return Promise.reject(error.message || error);
+    return throwError(() => error);
   }
 }
 
