@@ -1,5 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { catchError, Observable, throwError } from 'rxjs';
 
 import 'rxjs/add/operator/toPromise';
 
@@ -11,14 +12,20 @@ export class HeroService {
   private headers = new Headers({ 'Content-Type': 'application/json' });
   private heroesUrl = 'api/heroes';  // URL to web api
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
   }
 
-  getHeroes(): Promise<Hero[]> {
-    return this.http.get(this.heroesUrl)
-        .toPromise()
-        .then(response => response.json().data as Hero[])
-        .catch(this.handleError);
+  getHeroes(): Observable<Hero[]> {
+    return this.http.get<Hero[]>(this.heroesUrl).pipe(
+      catchError(error => {
+        console.error('An error occurred', error); // for demo purposes only
+        return throwError(() => error);
+      })
+    );
+    // return this.http.get(this.heroesUrl)
+    //     .toPromise()
+    //     .then(response => response.json().data as Hero[])
+    //     .catch(this.handleError);
   }
 
 

@@ -1,17 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Observable class extensions
-import 'rxjs/add/observable/of';
-
-// Observable operators
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-
-import { HeroSearchService } from './hero-search.service';
+import { debounceTime, distinctUntilChanged, map, Observable, of, Subject, switchMap } from 'rxjs';
 import { Hero } from './hero';
-import { Observable, Subject } from 'rxjs';
+import { HeroSearchService } from './hero-search.service';
 
 @Component({
   selector: 'toh-hero-search',
@@ -33,19 +25,25 @@ export class HeroSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.heroes = this.searchTerms
-        .debounceTime(300)        // wait 300ms after each keystroke before considering the term
-        .distinctUntilChanged()   // ignore if next search term is same as previous
-        .switchMap(term => term   // switch to new observable each time the term changes
-            // return the http search observable
-            ? this.heroSearchService.search(term)
-            // or the observable of empty heroes if there was no search term
-            : Observable.of<Hero[]>([]))
-        .catch(error => {
-          // TODO: add real error handling
-          console.log(error);
-          return Observable.of<Hero[]>([]);
-        });
+    this.heroes = this.searchTerms.asObservable().pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(term => term ? this.heroSearchService.search(term) : of([])),
+      map(heroes => heroes as Hero[])
+    );
+    // this.heroes = this.searchTerms
+    //     .debounceTime(300)        // wait 300ms after each keystroke before considering the term
+    //     .distinctUntilChanged()   // ignore if next search term is same as previous
+    //     .switchMap(term => term   // switch to new observable each time the term changes
+    //         // return the http search observable
+    //         ? this.heroSearchService.search(term)
+    //         // or the observable of empty heroes if there was no search term
+    //         : Observable.of<Hero[]>([]))
+    //     .catch(error => {
+    //       // TODO: add real error handling
+    //       console.log(error);
+    //       return Observable.of<Hero[]>([]);
+    //     });
   }
 
   gotoDetail(hero: Hero): void {
