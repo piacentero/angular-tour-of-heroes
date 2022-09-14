@@ -8,7 +8,7 @@
 
 <ul class="list-group" [hidden]="loadingHeroes">
     <ng-container *ngFor="let hero of heroes$ | async; index as i" >
-        <li class="list-group-item" 
+        <li class="list-group-item"
             [ngClass]="{ 'bg-blue' : i%2==0}"
             (click)="onSelect(hero)"
             [class.active]="hero === selectedHero"
@@ -20,7 +20,7 @@
         </button>
     </li>
     </ng-container>
-    
+
 </ul>
 <div *ngIf="selectedHero">
   <h4>
