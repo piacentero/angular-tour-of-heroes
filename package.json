@@ -1,15 +1,14 @@
 {
-  "name": "angular-tour-of-heroes-example",
+  "name": "tour-of-heroes",
   "version": "0.0.0",
-  "private": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   },
+  "private": true,
   "dependencies": {
     "@angular/animations": "^14.1.0",
     "@angular/common": "^14.1.0",
